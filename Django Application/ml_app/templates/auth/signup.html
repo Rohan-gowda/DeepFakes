@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - DeepFake Detection</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .auth-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 48px 40px;
+            max-width: 440px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .auth-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .auth-icon i {
+            font-size: 1.75rem;
+            color: #2563eb;
+        }
+        
+        .auth-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .auth-header p {
+            color: #737373;
+            font-size: 0.9375rem;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #171717;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .form-group label i {
+            margin-right: 6px;
+            color: #737373;
+            font-size: 0.875rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .alert {
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.875rem;
+            border: 1px solid;
+        }
+        
+        .alert-danger {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+        
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+        
+        .alert i {
+            margin-right: 8px;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-submit i {
+            margin-right: 8px;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 28px;
+            border-top: 1px solid #e5e5e5;
+        }
+        
+        .auth-footer p {
+            color: #737373;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        .auth-footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        
+        .auth-footer a:hover {
+            color: #1d4ed8;
+        }
+        
+        .home-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .home-link a {
+            color: #737373;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .home-link a:hover {
+            color: #171717;
+        }
+        
+        .home-link a i {
+            margin-right: 6px;
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 40px 28px;
+            }
+            
+            .auth-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h2>Create Account</h2>
+            <p>Join DeepFake Detector today</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %}">
+                    <i class="fas fa-info-circle"></i> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'ml_app:signup' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_username">
+                    <i class="fas fa-user"></i> Username
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="id_username" 
+                       name="username" 
+                       placeholder="Choose a username"
+                       required
+                       autocomplete="username">
+                {% if form.username.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {% for error in form.username.errors %}
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">
+                    <i class="fas fa-envelope"></i> Email Address
+                </label>
+                <input type="email" 
+                       class="form-control" 
+                       id="id_email" 
+                       name="email" 
+                       placeholder="Enter your email"
+                       required
+                       autocomplete="email">
+                {% if form.email.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {% for error in form.email.errors %}
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password1">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <input type="password" 
+                       class="form-control" 
+                       id="id_password1" 
+                       name="password1" 
+                       placeholder="Create a password"
+                       required
+                       autocomplete="new-password">
+                {% if form.password1.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {% for error in form.password1.errors %}
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password2">
+                    <i class="fas fa-lock"></i> Confirm Password
+                </label>
+                <input type="password" 
+                       class="form-control" 
+                       id="id_password2" 
+                       name="password2" 
+                       placeholder="Confirm your password"
+                       required
+                       autocomplete="new-password">
+                {% if form.password2.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {% for error in form.password2.errors %}
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'ml_app:login' %}">Sign in</a></p>
+            </div>
+        </form>
+
+        <div class="home-link">
+            <a href="{% url 'ml_app:index' %}">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</body>
+</html>

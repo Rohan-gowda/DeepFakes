@@ -2,11 +2,11 @@
     .navbar-custom {
         background: #ffffff !important;
         box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-        padding: 14px 0;
+        padding: 16px 0;
         position: sticky;
         top: 0;
         z-index: 1000;
-        transition: box-shadow 0.2s ease;
+        transition: all 0.2s ease;
     }
     
     .navbar-custom.scrolled {
@@ -33,48 +33,76 @@
     }
     
     .nav-link {
-        color: #525252 !important;
+        color: rgba(255, 255, 255, 0.95) !important;
         font-weight: 500;
-        transition: color 0.2s ease;
-        margin: 0 4px;
-        padding: 8px 12px !important;
-        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        margin: 0 8px;
+        padding: 8px 16px !important;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .nav-link::before {
+        content: '';\n        position: absolute;\n        bottom: 0;\n        left: 0;\n        width: 100%;\n        height: 2px;\n        background: white;\n        transform: scaleX(0);\n        transition: transform 0.3s ease;\n    }
+    
+    .nav-link:hover::before {
+        transform: scaleX(1);
     }
     
     .nav-link:hover {
-        color: #171717 !important;
+        color: white !important;
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
     }
     
     .nav-link i {
         margin-right: 6px;
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
     
     .badge-admin-nav {
-        background: #dc2626;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.6875rem;
-        margin-left: 6px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        margin-left: 8px;
         font-weight: 600;
-        color: white;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+        animation: glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes glow {
+        0%, 100% {
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+        }
+        50% {
+            box-shadow: 0 2px 15px rgba(239, 68, 68, 0.6);
+        }
     }
     
     .navbar-toggler {
         border: none;
         padding: 8px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
     
     .navbar-toggler:focus {
-        box-shadow: none;
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
     }
     
     @media (max-width: 991px) {
         .navbar-collapse {
-            background: #ffffff;
+            background: rgba(99, 102, 241, 0.98);
             margin-top: 15px;
-            padding: 15px;
-            border-top: 1px solid #e5e5e5;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
         
         .nav-link {
@@ -82,7 +110,7 @@
         }
     }
 </style>
-<nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
         <a class="navbar-brand" href="{% url 'ml_app:index' %}">
             <i class="fas fa-shield-alt"></i>
