@@ -1,0 +1,27 @@
+# Python cache & compiled files
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+Django Application/venv/
+
+# Django DB (unless you want to version it)
+db.sqlite3
+
+# Uploaded files
+Django Application/uploaded_images/
+Django Application/uploaded_videos/
+
+# Dlib wheel and installers
+*.whl
+*.exe
+
+# Logs
+*.log
+
+# VS Code editor config
+.vscode/
+
+# Models (optional—if they are large)
+Django Application/models/
