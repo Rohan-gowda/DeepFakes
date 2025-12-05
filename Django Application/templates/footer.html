@@ -1,8 +1,149 @@
-<footer class="footer">
+<style>
+    .footer-custom {
+        background: #fafafa;
+        color: #525252;
+        padding: 48px 0 24px;
+        margin-top: 80px;
+        border-top: 1px solid #e5e5e5;
+    }
+    
+    .footer-custom h5 {
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 1rem;
+        color: #171717;
+        letter-spacing: -0.3px;
+    }
+    
+    .footer-custom h5 i {
+        margin-right: 8px;
+        font-size: 1.1rem;
+        color: #2563eb;
+    }
+    
+    .footer-custom p {
+        color: #737373;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        max-width: 320px;
+    }
+    
+    .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .footer-links a {
+        color: #525252;
+        text-decoration: none;
+        transition: color 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 0;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+    
+    .footer-links a i {
+        margin-right: 8px;
+        font-size: 0.875rem;
+        width: 16px;
+        text-align: center;
+    }
+    
+    .footer-links a:hover {
+        color: #171717;
+    }
+    
+    .footer-social {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .footer-social a {
+        color: #525252;
+        font-size: 1.25rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #f5f5f5;
+        transition: all 0.2s ease;
+    }
+    
+    .footer-social a:hover {
+        background: #e5e5e5;
+        color: #171717;
+    }
+    
+    .footer-copyright {
+        border-top: 1px solid #e5e5e5;
+        margin-top: 40px;
+        padding-top: 24px;
+        text-align: center;
+        font-size: 0.8125rem;
+        color: #737373;
+    }
+    
+    @media (max-width: 768px) {
+        .footer-custom {
+            padding: 40px 0 20px;
+            text-align: center !important;
+        }
+        
+        .footer-links {
+            align-items: center;
+        }
+        
+        .footer-social {
+            justify-content: center;
+        }
+        
+        .footer-custom p {
+            margin: 0 auto;
+        }
+    }
+</style>
+<footer class="footer-custom">
     <div class="container">
-      <center><span class="text-muted" >Copyright @ {%now 'Y'%}</span></center>
-      <!-- <a href="{% url 'ml_app:home'%}">Home</a>
-      <a href="{% url 'ml_app:about'%}">About</a>
-      <a href="#">Github Link</a> -->
+        <div class="row">
+            <div class="col-md-4">
+                <h5><i class="fas fa-shield-alt"></i> DeepFake Detector</h5>
+                <p>
+                    Advanced AI-powered deepfake detection system using state-of-the-art deep learning technology to authenticate video content.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <div class="footer-links">
+                    <a href="{% url 'ml_app:index'%}"><i class="fas fa-home"></i> Home</a>
+                    <a href="{% url 'ml_app:about'%}"><i class="fas fa-info-circle"></i> About</a>
+                    {% if user.is_authenticated and user.user_type == 'admin' %}
+                    <a href="{% url 'ml_app:admin_dashboard'%}"><i class="fas fa-user-shield"></i> Dashboard</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Connect With Us</h5>
+                <div class="footer-social">
+                    <a href="https://github.com/Rohan-gowda" target="_blank" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" target="_blank" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <span>© {%now 'Y'%} DeepFake Detector. All rights reserved. Built with Django & PyTorch</span>
+        </div>
     </div>
-  </footer>
+</footer>

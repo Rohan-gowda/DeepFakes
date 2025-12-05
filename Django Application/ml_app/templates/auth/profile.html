@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .profile-header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+    }
+    .user-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    .stat-card h3 {
+        color: #667eea;
+        font-size: 2rem;
+        margin: 10px 0;
+    }
+    .history-section {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .history-table {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .history-table th {
+        background: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+    }
+    .history-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+    .badge-real {
+        background: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .badge-fake {
+        background: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .btn-logout {
+        margin-top: 20px;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>👤 {{ user.username }}</h1>
+        <div class="user-badge">{{ user.user_type|upper }}</div>
+        <p>{{ user.email }}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h4>📊 Total Uploads</h4>
+            <h3>{{ total_uploads }}</h3>
+        </div>
+        <div class="stat-card">
+            <h4>📅 Member Since</h4>
+            <h3>{{ user.date_joined|date:"M Y" }}</h3>
+        </div>
+        {% if user.user_type == 'admin' %}
+        <div class="stat-card">
+            <h4>🛡️ Admin Access</h4>
+            <a href="{% url 'ml_app:admin_dashboard' %}" class="btn btn-primary">Dashboard</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="history-section">
+        <h2>📹 Upload History</h2>
+        
+        {% if upload_history %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Video Name</th>
+                    <th>Result</th>
+                    <th>Confidence</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for upload in upload_history %}
+                <tr>
+                    <td>{{ upload.upload_date|date:"M d, Y H:i" }}</td>
+                    <td>{{ upload.video_name }}</td>
+                    <td>
+                        {% if upload.prediction_result == 'REAL' %}
+                            <span class="badge-real">✓ REAL</span>
+                        {% elif upload.prediction_result == 'FAKE' %}
+                            <span class="badge-fake">✗ FAKE</span>
+                        {% else %}
+                            <span>-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ upload.confidence|floatformat:1 }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: #666; margin-top: 30px;">
+            No upload history yet. <a href="{% url 'ml_app:home' %}">Upload your first video</a>
+        </p>
+        {% endif %}
+    </div>
+
+    <div style="text-align: center;">
+        <a href="{% url 'ml_app:home' %}" class="btn btn-primary">🏠 Home</a>
+        <a href="{% url 'ml_app:logout' %}" class="btn btn-danger btn-logout">🚪 Logout</a>
+    </div>
+</div>
+{% endblock %}
