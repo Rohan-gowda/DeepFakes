@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import torch
 import torchvision
 from torchvision import transforms, models
@@ -22,6 +24,7 @@ from PIL import Image as pImage
 import time
 from django.conf import settings
 from .forms import VideoUploadForm
+from .models import VideoUploadHistory
 
 index_template_name = 'index.html'
 predict_template_name = 'predict.html'
@@ -212,6 +215,8 @@ def allowed_video_file(filename):
         return True
     else: 
         return False
+
+@login_required
 def index(request):
     if request.method == 'GET':
         video_upload_form = VideoUploadForm()
@@ -252,10 +257,13 @@ def index(request):
                     shutil.copyfileobj(video_file, vFile)
                 request.session['file_name'] = os.path.join(settings.PROJECT_DIR, 'uploaded_videos','app','uploaded_videos', saved_video_file)
             request.session['sequence_length'] = sequence_length
+            # Save video file name in session for history
+            request.session['uploaded_video_name'] = video_file.name
             return redirect('ml_app:predict')
         else:
             return render(request, index_template_name, {"form": video_upload_form})
 
+@login_required
 def predict_page(request):
     if request.method == "GET":
         # Redirect to 'home' if 'file_name' is not in session
@@ -361,9 +369,15 @@ def predict_page(request):
                 print("--- %s seconds ---" % (time.time() - start_time))
 
                 # Uncomment if you want to create heat map images
-                # for j in range(sequence_length):
-                #     heatmap_images.append(plot_heat_map(j, model, video_dataset[i], './', video_file_name_only))
-
+            # Save upload history to database
+            video_name = request.session.get('uploaded_video_name', 'Unknown')
+            VideoUploadHistory.objects.create(
+                user=request.user,
+                video_name=video_name,
+                prediction_result=output,
+                confidence=confidence
+            )
+            
             # Render results
             context = {
                 'preprocessed_images': preprocessed_images,
@@ -375,18 +389,135 @@ def predict_page(request):
                 'confidence': confidence
             }
 
-            if settings.DEBUG:
-                return render(request, predict_template_name, context)
-            else:
-                return render(request, predict_template_name, context)
+            return render(request, predict_template_name, context)
 
         except Exception as e:
             print(f"Exception occurred during prediction: {e}")
             return render(request, 'cuda_full.html')
+
 def about(request):
     return render(request, about_template_name)
 
 def handler404(request,exception):
     return render(request, '404.html', status=404)
+
 def cuda_full(request):
     return render(request, 'cuda_full.html')
+
+# Authentication Views
+from django.contrib.auth import authenticate, login, logout
+from .models import User
+
+def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('ml_app:index')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'Welcome back, {user.username}!')
+            next_url = request.GET.get('next', 'ml_app:index')
+            return redirect(next_url)
+        else:
+            messages.error(request, 'Invalid username or password.')
+    
+    return render(request, 'auth/login.html')
+
+def user_signup(request):
+    if request.user.is_authenticated:
+        return redirect('ml_app:index')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        user_type = request.POST.get('user_type', 'user')
+        
+        # Validation
+        if password != password_confirm:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'auth/signup.html')
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists.')
+            return render(request, 'auth/signup.html')
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already registered.')
+            return render(request, 'auth/signup.html')
+        
+        # Create user
+        user = User(
+            username=username,
+            email=email,
+            user_type=user_type
+        )
+        user.set_password(password)
+        user.save()
+        
+        messages.success(request, 'Account created successfully! Please login.')
+        return redirect('ml_app:login')
+    
+    return render(request, 'auth/signup.html')
+
+def user_logout(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('ml_app:login')
+
+@login_required
+def user_profile(request):
+    upload_history = VideoUploadHistory.objects.filter(user=request.user).order_by('-upload_date')
+    context = {
+        'user': request.user,
+        'upload_history': upload_history
+    }
+    return render(request, 'profile.html', context)
+
+@login_required
+def admin_dashboard(request):
+    if request.user.user_type != 'admin' and not request.user.is_superuser:
+        messages.error(request, 'Access denied. Admin privileges required.')
+        return redirect('index')
+    
+    total_users = User.objects.count()
+    total_uploads = VideoUploadHistory.objects.count()
+    admin_users = User.objects.filter(user_type='admin').count()
+    regular_users = User.objects.filter(user_type='user').count()
+    
+    recent_uploads = VideoUploadHistory.objects.all().order_by('-upload_date')[:10]
+    all_users = User.objects.all().order_by('-date_joined')
+    
+    context = {
+        'total_users': total_users,
+        'total_uploads': total_uploads,
+        'admin_users': admin_users,
+        'regular_users': regular_users,
+        'recent_uploads': recent_uploads,
+        'all_users': all_users
+    }
+    return render(request, 'admin_dashboard.html', context)
+
+@login_required
+def delete_user(request, user_id):
+    if request.user.user_type != 'admin' and not request.user.is_superuser:
+        messages.error(request, 'Access denied. Admin privileges required.')
+        return redirect('index')
+    
+    try:
+        user_to_delete = User.objects.get(id=user_id)
+        if user_to_delete.id == request.user.id:
+            messages.error(request, 'You cannot delete your own account.')
+        else:
+            username = user_to_delete.username
+            user_to_delete.delete()
+            messages.success(request, f'User "{username}" has been deleted successfully.')
+    except User.DoesNotExist:
+        messages.error(request, 'User not found.')
+    
+    return redirect('admin_dashboard')

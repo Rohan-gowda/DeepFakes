@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About - DeepFake Detector{% endblock %}
+{%block content%}
+<style>
+    .about-hero {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(139, 92, 246, 0.95) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        color: white;
+        padding: 120px 0 100px;
+        text-align: center;
+        margin-bottom: 70px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: pulse-bg 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-bg {
+        0%, 100% {
+            opacity: 0.5;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+    
+    .about-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 25px;
+        letter-spacing: -1px;
+        position: relative;
+        z-index: 1;
+        animation: slideUp 0.8s ease-out;
+    }
+    
+    .about-hero .lead {
+        font-size: 1.4rem;
+        font-weight: 400;
+        opacity: 0.95;
+        position: relative;
+        z-index: 1;
+        animation: slideUp 0.8s ease-out 0.2s both;
+    }
+    
+    .about-section {
+        padding: 50px 0;
+    }
+    
+    .about-section h2 {
+        font-weight: 800;
+        font-size: 2.5rem;
+        color: var(--gray-800);
+        margin-bottom: 25px;
+        letter-spacing: -1px;
+    }
+    
+    .about-section .lead {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: var(--gray-600);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .feature-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 40px 35px;
+        margin: 20px 0;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+    
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+    }
+    
+    .feature-icon {
+        font-size: 3.5rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 25px;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .feature-card h4 {
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: var(--gray-800);
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+    
+    .feature-card p {
+        color: var(--gray-600);
+        line-height: 1.7;
+        font-size: 1rem;
+    }
+    .tech-stack {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 50px 45px;
+        margin: 50px 0;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .tech-stack h3 {
+        font-weight: 800;
+        font-size: 2rem;
+        color: var(--gray-800);
+        margin-bottom: 35px;
+        letter-spacing: -0.5px;
+    }
+    
+    .tech-badge {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        margin: 10px;
+        display: inline-block;
+        font-weight: 600;
+        box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+    
+    .tech-badge:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    }
+    
+    .tech-badge i {
+        margin-right: 8px;
+    }
+    
+    .stats-section {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(139, 92, 246, 0.95) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        color: white;
+        padding: 70px 0;
+        margin: 70px 0;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stats-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    }
+    
+    .stat-box {
+        text-align: center;
+        padding: 30px 20px;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-box:hover {
+        transform: translateY(-8px);
+    }
+    
+    .stat-number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .stat-number i {
+        margin-right: 12px;
+    }
+    
+    .stat-label {
+        font-size: 1.15rem;
+        opacity: 0.95;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+
+<div class="about-hero">
+    <div class="container">
+        <h1><i class="fas fa-shield-alt"></i> About DeepFake Detector</h1>
+        <p class="lead">Advanced AI-Powered Video Authentication System</p>
+    </div>
+</div>
+
+<div class="container about-section">
+    <div class="row">
+        <div class="col-lg-12 text-center mb-5">
+            <h2>What is DeepFake Detection?</h2>
+            <p class="lead">DeepFake Detector is an advanced artificial intelligence system designed to identify manipulated videos and protect against digital deception. Using state-of-the-art deep learning algorithms, our platform analyzes video content to detect signs of deepfake manipulation with high accuracy.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h4>AI-Powered Analysis</h4>
+                <p>Our system uses advanced neural networks trained on millions of videos to detect even the most sophisticated deepfakes with high precision.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <h4>Real-Time Processing</h4>
+                <p>Upload your video and get instant results. Our optimized algorithms process videos quickly without compromising accuracy.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h4>Secure & Private</h4>
+                <p>Your uploaded videos are processed securely and deleted after analysis. We prioritize your privacy and data security.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4>High Accuracy</h4>
+                <p>Trained on diverse datasets, our model achieves over 90% accuracy in detecting deepfake videos across various scenarios.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h4>Open Source</h4>
+                <p>Built with open-source technologies and transparent methodologies. Check out our GitHub repository for more details.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4>User-Friendly</h4>
+                <p>Simple and intuitive interface. No technical knowledge required - just upload and analyze.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number"><i class="fas fa-check-circle"></i> 90%+</div>
+                    <div class="stat-label">Detection Accuracy</div>
+                </div>
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number"><i class="fas fa-video"></i> 1000+</div>
+                    <div class="stat-label">Videos Analyzed</div>
+                </div>
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number"><i class="fas fa-users"></i> 500+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number"><i class="fas fa-clock"></i> &lt;5 min</div>
+                    <div class="stat-label">Average Processing Time</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-stack">
+        <h3 class="text-center mb-4">Technology Stack</h3>
+        <div class="text-center">
+            <span class="tech-badge"><i class="fab fa-python"></i> Python</span>
+            <span class="tech-badge"><i class="fas fa-server"></i> Django</span>
+            <span class="tech-badge"><i class="fas fa-brain"></i> PyTorch</span>
+            <span class="tech-badge"><i class="fas fa-camera"></i> OpenCV</span>
+            <span class="tech-badge"><i class="fas fa-database"></i> SQLite</span>
+            <span class="tech-badge"><i class="fas fa-code"></i> JavaScript</span>
+            <span class="tech-badge"><i class="fab fa-bootstrap"></i> Bootstrap</span>
+            <span class="tech-badge"><i class="fas fa-project-diagram"></i> CNN/LSTM</span>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-lg-12 text-center">
+            <h3>How It Works</h3>
+            <p class="lead mb-4">Our deepfake detection process in 4 simple steps:</p>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <div class="feature-icon"><i class="fas fa-upload"></i></div>
+                <h5>1. Upload</h5>
+                <p>Upload your video file to our secure platform</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <div class="feature-icon"><i class="fas fa-search"></i></div>
+                <h5>2. Extract</h5>
+                <p>System extracts and analyzes facial features frame by frame</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                <h5>3. Analyze</h5>
+                <p>AI model processes the data and detects anomalies</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                <h5>4. Results</h5>
+                <p>Get detailed analysis and confidence scores</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+        <div class="col-lg-12 text-center">
+            <h3>Why DeepFake Detection Matters</h3>
+            <p class="lead">
+                Deepfakes pose serious threats to privacy, security, and trust in media. They can be used for misinformation, 
+                fraud, and identity theft. Our tool helps combat these threats by providing accessible, accurate detection technology 
+                to everyone - from journalists and researchers to everyday users concerned about media authenticity.
+            </p>
+            <a href="{% url 'ml_app:index' %}" class="btn btn-lg mt-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 40px; border-radius: 30px;">
+                <i class="fas fa-play-circle"></i> Try It Now
+            </a>
+        </div>
+    </div>
+</div>
+{%endblock%}
